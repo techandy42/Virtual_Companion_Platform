@@ -9,10 +9,11 @@ import {
   Navigate,
 } from 'react-router-dom'
 
-const supabase = createClient(
-  'https://cnyhjkbcgesrzdmmwxey.supabase.co',
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNueWhqa2JjZ2VzcnpkbW13eGV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTIxNjk1NjQsImV4cCI6MjAwNzc0NTU2NH0.MHuIeCtCDwx0HbCTr80H31QOyQYdGS1khX5fc1Mc0d0',
-)
+const supabase_url: string = import.meta.env.VITE_REACT_APP_SUPABASE_URL || ''
+const supabase_anon_key: string =
+  import.meta.env.VITE_REACT_APP_SUPABASE_ANON_KEY || ''
+
+const supabase = createClient(supabase_url, supabase_anon_key)
 
 export default function App() {
   const [session, setSession] = useState(null)
