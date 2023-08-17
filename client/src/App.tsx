@@ -8,6 +8,10 @@ import {
   Routes,
   Navigate,
 } from 'react-router-dom'
+import { Home } from './Home.tsx'
+import { CreateCompanion } from './CreateCompanion.tsx'
+import { CompanionChat } from './CompanionChat.tsx'
+import { SupabaseContext } from './SupabaseContext' // Import the context
 
 const supabase_url: string = import.meta.env.VITE_REACT_APP_SUPABASE_URL || ''
 const supabase_anon_key: string =
@@ -38,36 +42,46 @@ export default function App() {
   }
 
   return (
-    <Router>
-      <Routes>
-        <Route
-          path='/'
-          element={
-            !session ? (
-              <Auth
-                supabaseClient={supabase}
-                appearance={{ theme: ThemeSupa }}
-                providers={['google']}
-              />
-            ) : (
-              <Navigate to='/home' />
-            )
-          }
-        />
-        <Route
-          path='/home'
-          element={
-            session ? (
-              <div>
-                <h1>Logged in!</h1>
-                <button onClick={() => signOut()}>Sign Out</button>
-              </div>
-            ) : (
-              <Navigate to='/' />
-            )
-          }
-        />
-      </Routes>
-    </Router>
+    <SupabaseContext.Provider value={supabase}>
+      <Router>
+        <Routes>
+          <Route
+            path='/'
+            element={
+              !session ? (
+                <Auth
+                  supabaseClient={supabase}
+                  appearance={{ theme: ThemeSupa }}
+                  providers={['google']}
+                />
+              ) : (
+                <Navigate to='/home' />
+              )
+            }
+          />
+          <Route
+            path='/home'
+            element={
+              session ? (
+                <Home userId={session?.user?.id} signOut={signOut} />
+              ) : (
+                <Navigate to='/' />
+              )
+            }
+          />
+          <Route
+            path='/create'
+            element={
+              session ? (
+                <CreateCompanion userId={session?.user?.id} />
+              ) : (
+                <Navigate to='/' />
+              )
+            }
+          />
+          <Route path='/chat/:companionId' element={<CompanionChat />} />
+        </Routes>
+      </Router>
+    </SupabaseContext.Provider>
   )
 }
