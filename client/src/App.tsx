@@ -79,7 +79,10 @@ export default function App() {
               )
             }
           />
-          <Route path='/chat/:companionId' element={<CompanionChat />} />
+          <Route
+            path='/chat/:companionId'
+            element={<CompanionChat userId={session?.user?.id} />}
+          />
         </Routes>
       </Router>
     </SupabaseContext.Provider>

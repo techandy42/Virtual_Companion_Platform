@@ -9,7 +9,7 @@ interface CreateCompanionProps {
 export const CreateCompanion: React.FC<CreateCompanionProps> = ({ userId }) => {
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
-  const [imagePath, setImagePath] = useState<string | null>(null)
+  const [imageBase64, setImageBase64] = useState<string | null>(null)
   const supabase = useSupabase()
   const navigate = useNavigate()
 
@@ -21,7 +21,7 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({ userId }) => {
           user_id: userId,
           name: name,
           description: description,
-          image_path: imagePath,
+          image_base64: imageBase64,
         },
       ])
 
@@ -44,7 +44,7 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({ userId }) => {
         body: JSON.stringify({ name, description }),
       })
       const imageData = await imageResponse.json()
-      setImagePath(imageData.path)
+      setImageBase64(imageData.base64)
     } else {
       alert(
         'Please fill out both the name and description fields before requesting an image.',
@@ -63,6 +63,7 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({ userId }) => {
             id='name'
             value={name}
             onChange={(e) => setName(e.target.value)}
+            maxLength={1000}
           />
         </div>
         <div>
@@ -71,16 +72,17 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({ userId }) => {
             id='description'
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            maxLength={10000}
           />
         </div>
-        <button type='submit' disabled={!name || !description || !imagePath}>
+        <button type='submit' disabled={!name || !description || !imageBase64}>
           Submit
         </button>
       </form>
       <button onClick={requestImage} disabled={!name || !description}>
         Request Image
       </button>
-      {imagePath && <img src={imagePath} alt={`Image of ${name}`} />}
+      {imageBase64 && <img src={imageBase64} alt='Base64 encoded image' />}
     </div>
   )
 }
