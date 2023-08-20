@@ -1,0 +1,6 @@
+.city-background {
+  background-image: url('./assets/futuristic_background.jpg'); /* https://wallpaperaccess.com/full/2797160.jpg */
+  background-size: cover; /* Cover the entire container */
+  background-repeat: no-repeat; /* Don't repeat the image */
+  background-position: center; /* Center the image */
+}

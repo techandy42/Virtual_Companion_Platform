@@ -74,7 +74,7 @@ export default function App() {
             path='/create'
             element={
               session ? (
-                <CreateCompanion userId={session?.user?.id} />
+                <CreateCompanion userId={session?.user?.id} signOut={signOut} />
               ) : (
                 <Navigate to='/' />
               )
