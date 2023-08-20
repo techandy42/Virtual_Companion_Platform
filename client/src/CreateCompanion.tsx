@@ -15,6 +15,7 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [imageBase64, setImageBase64] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const supabase = useSupabase()
   const navigate = useNavigate()
 
@@ -40,6 +41,7 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({
   }
 
   const requestImage = async () => {
+    setIsLoading(true)
     if (name && description) {
       // Request the image from the backend
       const imageResponse = await fetch('http://127.0.0.1:5000/create-image', {
@@ -55,10 +57,12 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({
         'Please fill out both the name and description fields before requesting an image.',
       )
     }
+    setIsLoading(false)
   }
 
   // Function to generate a realistic character
   const generateRealisticCharacter = async () => {
+    setIsLoading(true)
     const response = await fetch(
       'http://127.0.0.1:5000/generate-realistic-character',
       {
@@ -69,10 +73,12 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({
     const data = await response.json()
     setName(data.name)
     setDescription(data.description)
+    setIsLoading(false)
   }
 
   // Function to generate a fantasy character
   const generateFantasyCharacter = async () => {
+    setIsLoading(true)
     const response = await fetch(
       'http://127.0.0.1:5000/generate-fantasy-character',
       {
@@ -83,6 +89,7 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({
     const data = await response.json()
     setName(data.name)
     setDescription(data.description)
+    setIsLoading(false)
   }
 
   return (
@@ -107,23 +114,34 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={1000}
-              className='mt-1 p-2 w-full rounded-md border border-gray-300'
+              className='mt-2 p-2 w-full rounded-md border border-gray-300'
             />
           </div>
           <div className='mb-4'>
-            <label
-              htmlFor='description'
-              className='block text-sm font-medium text-gray-600'
-            >
-              Description:
-            </label>
-            <textarea
-              id='description'
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              maxLength={10000}
-              className='mt-1 p-2 w-full h-32 rounded-md border border-gray-300'
-            />
+            <div className='flex flex-col w-full'>
+              <label
+                htmlFor='description'
+                className='block text-sm font-medium text-gray-600'
+              >
+                Description:
+              </label>
+              <div className='flex space-x-4 items-center'>
+                <textarea
+                  id='description'
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  maxLength={10000}
+                  className='mt-2 p-2 w-full h-64 resize-none rounded-md border border-gray-300 overflow-y-auto'
+                />
+                {imageBase64 && (
+                  <img
+                    src={imageBase64}
+                    alt='Base64 encoded image'
+                    className='mt-2 rounded-md shadow-md h-64 w-16 sm:w-48 lg:w-64'
+                  />
+                )}
+              </div>
+            </div>
           </div>
           <button
             type='submit'
@@ -140,33 +158,34 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({
         <div className='mt-4 flex space-x-4'>
           <button
             onClick={generateRealisticCharacter}
-            className='bg-green-600 text-white p-2 rounded-md hover:bg-green-700'
+            disabled={isLoading} // Disable the button if isLoading is true
+            className={`bg-green-600 text-white p-2 rounded-md hover:bg-green-700 ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
             Generate Realistic Character
           </button>
           <button
             onClick={generateFantasyCharacter}
-            className='bg-purple-600 text-white p-2 rounded-md hover:bg-purple-700'
+            disabled={isLoading} // Disable the button if isLoading is true
+            className={`bg-purple-600 text-white p-2 rounded-md hover:bg-purple-700 ${
+              isLoading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
             Generate Fantasy Character
           </button>
           <button
             onClick={requestImage}
-            disabled={!name || !description}
+            disabled={!name || !description || isLoading} // Disable the button if isLoading is true
             className={`bg-yellow-600 text-white p-2 rounded-md hover:bg-yellow-700 ${
-              !name || !description ? 'opacity-50 cursor-not-allowed' : ''
+              !name || !description || isLoading
+                ? 'opacity-50 cursor-not-allowed'
+                : ''
             }`}
           >
             Request Image
           </button>
         </div>
-        {imageBase64 && (
-          <img
-            src={imageBase64}
-            alt='Base64 encoded image'
-            className='mt-4 rounded-md shadow-md'
-          />
-        )}
       </div>
     </div>
   )

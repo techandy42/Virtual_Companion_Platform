@@ -48,13 +48,15 @@ export default function App() {
         <Routes>
           <Route
             path='/chat/:companionId'
-            element={<CompanionChat userId={session?.user?.id} />}
+            element={
+              <CompanionChat userId={session?.user?.id} signOut={signOut} />
+            }
           />
           <Route
             path='/edit/:companionId'
             element={
               session ? (
-                <EditCompanion userId={session?.user?.id} />
+                <EditCompanion userId={session?.user?.id} signOut={signOut} />
               ) : (
                 <Navigate to='/' />
               )

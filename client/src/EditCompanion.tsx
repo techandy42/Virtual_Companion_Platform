@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useSupabase } from './SupabaseContext'
+import { NavbarNonHome } from './NavbarNonHome'
 
 interface EditCompanionProps {
   userId: string | null
+  signOut: () => Promise<void>
 }
 
-export const EditCompanion: React.FC<EditCompanionProps> = ({ userId }) => {
+export const EditCompanion: React.FC<EditCompanionProps> = ({
+  userId,
+  signOut,
+}) => {
   const { companionId } = useParams<{ companionId: string }>()
   const [name, setName] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [imageBase64, setImageBase64] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const supabase = useSupabase()
   const navigate = useNavigate()
 
@@ -37,6 +43,7 @@ export const EditCompanion: React.FC<EditCompanionProps> = ({ userId }) => {
   }, [userId, companionId, supabase])
 
   const requestImage = async () => {
+    setIsLoading(true)
     if (name && description) {
       // Request the image from the backend
       const imageResponse = await fetch('http://127.0.0.1:5000/create-image', {
@@ -51,6 +58,7 @@ export const EditCompanion: React.FC<EditCompanionProps> = ({ userId }) => {
         'Please fill out both the name and description fields before requesting an image.',
       )
     }
+    setIsLoading(false)
   }
 
   const handleUpdate = async () => {
@@ -89,34 +97,88 @@ export const EditCompanion: React.FC<EditCompanionProps> = ({ userId }) => {
   }
 
   return (
-    <div>
-      <h1>Edit Companion</h1>
-      <div>
-        <label htmlFor='name'>Name:</label>
-        <input
-          type='text'
-          id='name'
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
+    <div className='flex flex-col h-screen bg-gray-100'>
+      <NavbarNonHome signOut={signOut} />
+      <div className='p-8'>
+        <h1 className='text-2xl font-semibold mb-4'>Edit Companion</h1>
+        <div className='bg-white p-8 rounded-md shadow-md'>
+          <div className='mb-4'>
+            <label
+              htmlFor='name'
+              className='block text-sm font-medium text-gray-600'
+            >
+              Name:
+            </label>
+            <input
+              type='text'
+              id='name'
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              maxLength={1000}
+              className='mt-2 p-2 w-full rounded-md border border-gray-300'
+            />
+          </div>
+          <div className='mb-4'>
+            <div className='flex flex-col w-full'>
+              <label
+                htmlFor='description'
+                className='block text-sm font-medium text-gray-600'
+              >
+                Description:
+              </label>
+              <div className='flex space-x-4 items-center'>
+                <textarea
+                  id='description'
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  maxLength={10000}
+                  className='mt-2 p-2 w-full h-64 resize-none rounded-md border border-gray-300 overflow-y-auto'
+                />
+                {imageBase64 && (
+                  <img
+                    src={imageBase64}
+                    alt='Base64 encoded image'
+                    className='mt-2 rounded-md shadow-md h-64 w-16 sm:w-48 lg:w-64'
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+          <div className='mt-4 flex space-x-4'>
+            <button
+              onClick={requestImage}
+              disabled={!name || !description || isLoading} // Disable the button if isLoading is true
+              className={`bg-yellow-600 text-white p-2 rounded-md hover:bg-yellow-700 ${
+                !name || !description || isLoading
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''
+              }`}
+            >
+              Request Image
+            </button>
+            <button
+              onClick={handleUpdate}
+              className={`bg-blue-600 text-white p-2 rounded-md hover:bg-blue-700 ${
+                !name || !description || isLoading
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''
+              }`}
+            >
+              Update
+            </button>
+            <button
+              onClick={handleDelete}
+              className={`bg-red-600 text-white p-2 rounded-md hover:bg-red-700 ${
+                !name || !description || isLoading
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''
+              }`}
+            >
+              Delete
+            </button>
+          </div>
+        </div>
       </div>
-      <div>
-        <label htmlFor='description'>Description:</label>
-        <textarea
-          id='description'
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor='image'>Image:</label>
-        {imageBase64 && <img src={imageBase64} alt='Base64 encoded preview' />}
-      </div>
-      <button onClick={requestImage} disabled={!name || !description}>
-        Request New Image
-      </button>
-      <button onClick={handleUpdate}>Update</button>
-      <button onClick={handleDelete}>Delete</button>
     </div>
   )
 }
