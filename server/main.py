@@ -57,6 +57,48 @@ def create_image():
 
     return jsonify({"message": "Image created successfully", "base64": image_base64})
 
+@app.route('/generate-realistic-character', methods=['POST'])
+def generate_realistic_character():
+    chat = ChatOpenAI(model_name='gpt-4')
+
+    content = """
+    Instruction:
+    - Generate a name and a description for a realistic character.
+    - The description should be in bullet-points.
+    - The description should describe the physical attributes, the personality, the background story, speech and behavioural patterns, and the conversation style of the character.
+    - Output the name and the description in the following format: \"Name: NAME HERE | Description: DESCRIPTION HERE\"
+    - Do not output any other text.
+    """
+
+    summary = chat([HumanMessage(content=content)]).content
+
+    [name, description] = summary.split('|', 1)
+    name = name.replace('Name:', '').strip()
+    description = description.replace('Description:', '').strip()
+
+    return jsonify({"message": "Realistic character created successfully", "name": name, "description": description})
+
+@app.route('/generate-fantasy-character', methods=['POST'])
+def generate_fantasy_character():
+    chat = ChatOpenAI(model_name='gpt-4')
+
+    content = """
+    Instruction:
+    - Generate a name and a description for a popular, mainstream fantasy character.
+    - The description should be in bullet-points.
+    - The description should describe the physical attributes, the personality, the background story, speech and behavioural patterns, and the conversation style of the character.
+    - Output the name and the description in the following format: \"Name: NAME HERE | Description: DESCRIPTION HERE\"
+    - Do not output any other text.
+    """
+
+    summary = chat([HumanMessage(content=content)]).content
+
+    [name, description] = summary.split('|', 1)
+    name = name.replace('Name:', '').strip()
+    description = description.replace('Description:', '').strip()
+
+    return jsonify({"message": "Fantasy character created successfully", "name": name, "description": description})
+
 @socketio.on('start_chat')
 def start_chat(data):
     session_id = request.sid

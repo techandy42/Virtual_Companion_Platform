@@ -11,6 +11,7 @@ import {
 import { Home } from './Home.tsx'
 import { CreateCompanion } from './CreateCompanion.tsx'
 import { CompanionChat } from './CompanionChat.tsx'
+import { EditCompanion } from './EditCompanion.tsx' // Import the new component
 import { SupabaseContext } from './SupabaseContext' // Import the context
 
 const supabase_url: string = import.meta.env.VITE_REACT_APP_SUPABASE_URL || ''
@@ -46,16 +47,16 @@ export default function App() {
       <Router>
         <Routes>
           <Route
-            path='/'
+            path='/chat/:companionId'
+            element={<CompanionChat userId={session?.user?.id} />}
+          />
+          <Route
+            path='/edit/:companionId'
             element={
-              !session ? (
-                <Auth
-                  supabaseClient={supabase}
-                  appearance={{ theme: ThemeSupa }}
-                  providers={['google']}
-                />
+              session ? (
+                <EditCompanion userId={session?.user?.id} />
               ) : (
-                <Navigate to='/home' />
+                <Navigate to='/' />
               )
             }
           />
@@ -80,8 +81,18 @@ export default function App() {
             }
           />
           <Route
-            path='/chat/:companionId'
-            element={<CompanionChat userId={session?.user?.id} />}
+            path='/'
+            element={
+              !session ? (
+                <Auth
+                  supabaseClient={supabase}
+                  appearance={{ theme: ThemeSupa }}
+                  providers={['google']}
+                />
+              ) : (
+                <Navigate to='/home' />
+              )
+            }
           />
         </Routes>
       </Router>

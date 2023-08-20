@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useSupabase } from './SupabaseContext'
 import io, { Socket } from 'socket.io-client' // Import the Socket type
 
@@ -16,6 +16,11 @@ export const CompanionChat: React.FC<CompanionChatProps> = ({ userId }) => {
   const [message, setMessage] = useState<string>('')
   const [socket, setSocket] = useState<Socket | null>(null) // Store the socket object in state
   const supabase = useSupabase()
+  const navigate = useNavigate() // Declare the navigate function
+
+  const handleEditCompanion = () => {
+    navigate(`/edit/${companionId}`) // Navigate to the edit page for the current companion
+  }
 
   useEffect(() => {
     if (!userId) return
@@ -95,9 +100,36 @@ export const CompanionChat: React.FC<CompanionChatProps> = ({ userId }) => {
     }
   }
 
+  const clearConversation = async () => {
+    // Delete the chat logs from the database
+    const { error } = await supabase
+      .from('chat_logs')
+      .delete()
+      .eq('companion_id', companionId)
+      .eq('user_id', userId)
+
+    if (error) {
+      console.error('Error clearing conversation:', error)
+    } else {
+      // Optionally, you can clear the chat log in the state
+      setChatLog([])
+
+      // Disconnect the socket connection if needed
+      if (socket) {
+        socket.disconnect()
+      }
+
+      // Navigate back to /home
+      navigate('/home')
+    }
+  }
+
   return (
     <div>
       <h1>Chat with Companion</h1>
+      <button onClick={handleEditCompanion}>Edit Companion</button>
+      <button onClick={clearConversation}>Clear Conversation</button>{' '}
+      {/* Add the Clear Conversation button */}
       {companionName && <p>You are chatting with {companionName}</p>}
       {companionImage && (
         <img src={companionImage} alt={`Image of ${companionName}`} />

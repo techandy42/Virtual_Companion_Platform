@@ -52,6 +52,34 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({ userId }) => {
     }
   }
 
+  // Function to generate a realistic character
+  const generateRealisticCharacter = async () => {
+    const response = await fetch(
+      'http://127.0.0.1:5000/generate-realistic-character',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+    )
+    const data = await response.json()
+    setName(data.name)
+    setDescription(data.description)
+  }
+
+  // Function to generate a fantasy character
+  const generateFantasyCharacter = async () => {
+    const response = await fetch(
+      'http://127.0.0.1:5000/generate-fantasy-character',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      },
+    )
+    const data = await response.json()
+    setName(data.name)
+    setDescription(data.description)
+  }
+
   return (
     <div>
       <h1>Create Companion Page</h1>
@@ -79,6 +107,12 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({ userId }) => {
           Submit
         </button>
       </form>
+      <button onClick={generateRealisticCharacter}>
+        Generate Realistic Character
+      </button>
+      <button onClick={generateFantasyCharacter}>
+        Generate Fantasy Character
+      </button>
       <button onClick={requestImage} disabled={!name || !description}>
         Request Image
       </button>
