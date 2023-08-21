@@ -46,7 +46,7 @@ export const EditCompanion: React.FC<EditCompanionProps> = ({
     setIsLoading(true)
     if (name && description) {
       // Request the image from the backend
-      const imageResponse = await fetch('http://127.0.0.1:5000/create-image', {
+      const imageResponse = await fetch('http://127.0.0.1:8000/create-image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, description }),

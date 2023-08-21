@@ -44,7 +44,7 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({
     setIsLoading(true)
     if (name && description) {
       // Request the image from the backend
-      const imageResponse = await fetch('http://127.0.0.1:5000/create-image', {
+      const imageResponse = await fetch('http://127.0.0.1:8000/create-image', {
         // Updated URL
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -64,7 +64,7 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({
   const generateRealisticCharacter = async () => {
     setIsLoading(true)
     const response = await fetch(
-      'http://127.0.0.1:5000/generate-realistic-character',
+      'http://127.0.0.1:8000/generate-realistic-character',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -80,7 +80,7 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({
   const generateFantasyCharacter = async () => {
     setIsLoading(true)
     const response = await fetch(
-      'http://127.0.0.1:5000/generate-fantasy-character',
+      'http://127.0.0.1:8000/generate-fantasy-character',
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

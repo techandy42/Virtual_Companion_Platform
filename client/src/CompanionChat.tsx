@@ -70,7 +70,7 @@ export const CompanionChat: React.FC<CompanionChatProps> = ({
     fetchCompanionDetails()
     fetchPastChatLog()
 
-    const socketConnection = io('http://127.0.0.1:5000')
+    const socketConnection = io('http://127.0.0.1:8000')
     setSocket(socketConnection)
 
     socketConnection.emit('start_chat', {

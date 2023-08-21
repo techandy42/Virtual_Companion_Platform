@@ -16,7 +16,7 @@ from supabase_init import supabase
 from conversation import get_conversation
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey' # Replace this with a strong secret key
+app.secret_key = os.getenv("SECRET_KEY")
 CORS(app) # Apply CORS to the app
 socketio = SocketIO(app, cors_allowed_origins="*") # Enable WebSockets
 
@@ -135,8 +135,3 @@ def handle_disconnect():
     # Remove the chat session information for the disconnected client
     chat_sessions.pop(session_id, None)
     print(f'Session {session_id} disconnected')
-
-# Additional WebSocket handlers for chat functionality can be added here
-
-if __name__ == '__main__':
-    socketio.run(app, debug=True) # Start the app with Socket.IO
