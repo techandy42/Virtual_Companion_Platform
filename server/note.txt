@@ -1,2 +1,2 @@
 - To start the venv, use the command: `source env/bin/activate`
-- To run the program, use the command: `gunicorn --worker-class eventlet -w 1 main:app`
+- To run the program, use the command: `gunicorn main:app` or `gunicorn --worker-class eventlet -w 1 main:app`

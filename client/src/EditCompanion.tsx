@@ -46,11 +46,14 @@ export const EditCompanion: React.FC<EditCompanionProps> = ({
     setIsLoading(true)
     if (name && description) {
       // Request the image from the backend
-      const imageResponse = await fetch('http://127.0.0.1:8000/create-image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, description }),
-      })
+      const imageResponse = await fetch(
+        `${import.meta.env.VITE_REACT_APP_SERVER_URL}/create-image`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, description }),
+        },
+      )
       const imageData = await imageResponse.json()
       setImageBase64(imageData.base64)
     } else {

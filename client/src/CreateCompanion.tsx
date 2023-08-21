@@ -44,12 +44,15 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({
     setIsLoading(true)
     if (name && description) {
       // Request the image from the backend
-      const imageResponse = await fetch('http://127.0.0.1:8000/create-image', {
-        // Updated URL
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, description }),
-      })
+      const imageResponse = await fetch(
+        `${import.meta.env.VITE_REACT_APP_SERVER_URL}/create-image`,
+        {
+          // Updated URL
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, description }),
+        },
+      )
       const imageData = await imageResponse.json()
       setImageBase64(imageData.base64)
     } else {
@@ -64,7 +67,9 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({
   const generateRealisticCharacter = async () => {
     setIsLoading(true)
     const response = await fetch(
-      'http://127.0.0.1:8000/generate-realistic-character',
+      `${
+        import.meta.env.VITE_REACT_APP_SERVER_URL
+      }/generate-realistic-character`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -80,7 +85,7 @@ export const CreateCompanion: React.FC<CreateCompanionProps> = ({
   const generateFantasyCharacter = async () => {
     setIsLoading(true)
     const response = await fetch(
-      'http://127.0.0.1:8000/generate-fantasy-character',
+      `${import.meta.env.VITE_REACT_APP_SERVER_URL}/generate-fantasy-character`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
