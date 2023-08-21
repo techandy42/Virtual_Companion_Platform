@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import { Auth } from '@supabase/auth-ui-react'
-import { ThemeSupa } from '@supabase/auth-ui-shared'
 import {
   BrowserRouter as Router,
   Route,
@@ -13,6 +11,7 @@ import { CreateCompanion } from './CreateCompanion.tsx'
 import { CompanionChat } from './CompanionChat.tsx'
 import { EditCompanion } from './EditCompanion.tsx' // Import the new component
 import { SupabaseContext } from './SupabaseContext' // Import the context
+import { Login } from './Login.jsx'
 
 const supabase_url: string = import.meta.env.VITE_REACT_APP_SUPABASE_URL || ''
 const supabase_anon_key: string =
@@ -84,17 +83,7 @@ export default function App() {
           />
           <Route
             path='/'
-            element={
-              !session ? (
-                <Auth
-                  supabaseClient={supabase}
-                  appearance={{ theme: ThemeSupa }}
-                  providers={['google']}
-                />
-              ) : (
-                <Navigate to='/home' />
-              )
-            }
+            element={!session ? <Login supabase={supabase} /> : <Navigate to='/home' />}
           />
         </Routes>
       </Router>

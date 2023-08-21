@@ -187,8 +187,12 @@ export const CompanionChat: React.FC<CompanionChatProps> = ({
             />
             <button
               onClick={handleSendMessage}
-              disabled={message.trim() === '' || waitingForReply} // Disable button when input is empty or waiting for reply
-              className='bg-green-600 text-white p-2 rounded-md hover:bg-green-700'
+              disabled={message.trim() === '' || waitingForReply || !sessionKey} // Disable button when input is empty or waiting for reply
+              className={`bg-green-600 text-white p-2 rounded-md hover:bg-green-700 ${
+                message.trim() === '' || waitingForReply || !sessionKey
+                  ? 'opacity-50 cursor-not-allowed'
+                  : ''
+              }`}
             >
               Send
             </button>
